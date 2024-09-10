@@ -10,6 +10,6 @@ module.exports = {
 	entry: {
 		...getWebpackEntryPoints(),
 		variations: './variations/index.js',
-		admin: './admin/index.js',
+		admin: './admin/index.tsx',
 	},
 };
