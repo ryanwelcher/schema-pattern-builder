@@ -1,0 +1,11 @@
+build/
+node_modules/
+assets/
+
+#Typescript
+**/*.ts
+**/*.tsx
+**/*.d.ts.*
+tsconfig.json
+tsconfig.tsbuildinfo
+
