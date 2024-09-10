@@ -21,13 +21,6 @@ const defaultLayouts = {
 	},
 };
 
-const filterMapping = ( items ) => {
-	return [
-		{ label: 'Enabled', value: true },
-		{ label: 'Disabled', value: false },
-	];
-};
-
 const fields = [
 	{
 		id: 'id',
@@ -45,7 +38,10 @@ const fields = [
 	{
 		id: 'enabled',
 		label: __( 'Status' ),
-		elements: filterMapping(),
+		elements: [
+			{ label: 'Enabled', value: true },
+			{ label: 'Disabled', value: false },
+		],
 		render: ( { item } ) => {
 			const [ meta ] = useEntityProp(
 				'postType',
