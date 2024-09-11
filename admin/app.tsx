@@ -1,12 +1,19 @@
 /**
  * WordPress dependencies
  */
-import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews';
+import {
+	DataViews,
+	Field,
+	Fields,
+	filterSortAndPaginate,
+	View,
+	ViewTable,
+} from '@wordpress/dataviews';
 import { __ } from '@wordpress/i18n';
-import { useState, useMemo, useEffect } from '@wordpress/element';
-import { useEntityRecords, useEntityProp } from '@wordpress/core-data';
+import { useState } from '@wordpress/element';
+import { useEntityRecords, useEntityProp, Post } from '@wordpress/core-data';
 import { CheckboxControl } from '@wordpress/components';
-import { useDispatch, store as coreDataStore } from '@wordpress/data';
+import { useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -21,16 +28,11 @@ const defaultLayouts = {
 	},
 };
 
-const fields = [
-	{
-		id: 'id',
-		label: __( 'ID' ),
-		enableSorting: false,
-	},
+const fields: Field< Post >[] = [
 	{
 		id: 'title',
 		label: __( 'Name' ),
-		getValue: ( { item } ) => item.title.rendered,
+		getValue: ( { item }: { item: Post } ) => item.title.rendered,
 		enableGlobalSearch: true,
 		enableSorting: true,
 		enableHiding: false,
@@ -42,7 +44,7 @@ const fields = [
 			{ label: 'Enabled', value: true },
 			{ label: 'Disabled', value: false },
 		],
-		render: ( { item } ) => {
+		render: ( { item }: { item: Post } ) => {
 			const [ meta ] = useEntityProp(
 				'postType',
 				'schema',
@@ -75,7 +77,7 @@ const fields = [
 				</>
 			);
 		},
-		getValue: ( { item } ) => {
+		getValue: ( { item }: { item: Post } ) => {
 			return item.meta?.enabled;
 		},
 		enableSorting: false,
@@ -89,8 +91,8 @@ const fields = [
 const actions = [];
 
 const App = () => {
-	const [ page, setPage ] = useState( 1 );
-	const [ perPage, setPerPage ] = useState( 10 );
+	const [ page, setPage ] = useState< number | undefined >( 1 );
+	const [ perPage, setPerPage ] = useState< number | undefined >( 10 );
 	const [ orderby, setOrderby ] = useState( 'title' );
 	const [ order, setOrder ] = useState( 'asc' );
 	const [ search, setSearch ] = useState( '' );
@@ -112,7 +114,7 @@ const App = () => {
 	} );
 
 	// "view" and "setView" definition.
-	const [ view, setView ] = useState( {
+	const [ view, setView ] = useState< View >( {
 		type: 'table',
 		perPage: perPage,
 		layout: defaultLayouts.table.layout,
@@ -120,31 +122,31 @@ const App = () => {
 	} );
 
 	return (
-		<DataViews
+		<DataViews< Post >
 			isLoading={ isResolving }
-			data={ schemas || [] }
+			data={ schemas }
 			fields={ fields }
 			view={ view }
-			onChangeView={ ( data ) => {
-				console.log( 'onChangeView', data );
-				if ( data?.search?.length ) {
-					setSearch( data.search );
+			onChangeView={ ( view: View ) => {
+				console.log( 'onChangeView', view );
+				if ( view?.search?.length ) {
+					setSearch( view.search );
 					setOrderby( 'relevance' );
 				} else {
-					if ( data?.sort ) {
-						setOrderby( data?.sort?.field );
-						setOrder( data?.sort?.direction );
+					if ( view?.sort ) {
+						setOrderby( view?.sort?.field );
+						setOrder( view?.sort?.direction );
 					}
 				}
-				setPerPage( data.perPage );
-				setPage( data.page );
-				setEnabled( data.filters?.[ 0 ]?.value );
+				setPerPage( view.perPage );
+				setPage( view.page );
+				setEnabled( view.filters?.[ 0 ]?.value );
 				// // Pass the data to the view.
-				setView( data );
+				setView( view );
 			} }
 			defaultLayouts={ defaultLayouts }
-			actions={ actions }
-			paginationInfo={ { totalItems, totalPages } }
+			// actions={ actions }
+			// paginationInfo={ { totalItems, totalPages } }
 			onChangeSelection={ ( things ) => {
 				console.log( 'onChange', things );
 			} }

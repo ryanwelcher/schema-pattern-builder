@@ -16,15 +16,13 @@
 		"tsc": "tsc --watch"
 	},
 	"devDependencies": {
-		"@wordpress/components": "^28.7.0",
-		"@wordpress/core-data": "^7.7.0",
-		"@wordpress/data": "^10.7.0",
-		"@wordpress/scripts": "^28.3.0",
-		"concurrently": "^9.0.0",
-		"ts-loader": "^9.5.1"
+		"@wordpress/scripts": "^28.3.0"
 	},
 	"prettier": "@wordpress/prettier-config",
 	"dependencies": {
-		"@wordpress/dataviews": "4.2.0"
+		"@wordpress/dataviews": "4.2.0",
+		"@wordpress/components": "^28.7.0",
+		"@wordpress/core-data": "^7.7.0",
+		"@wordpress/data": "^10.7.0"
 	}
 }

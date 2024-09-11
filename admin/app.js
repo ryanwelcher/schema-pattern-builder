@@ -90,7 +90,7 @@ const fields = [
 	},
 ];
 
-const actions = [];
+const actions = [ {} ];
 
 const App = () => {
 	const [ page, setPage ] = useState( 1 );
