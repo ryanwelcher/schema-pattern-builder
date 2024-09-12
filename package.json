@@ -12,15 +12,13 @@
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start",
-		"tsc": "concurrently \"wp-scripts start\" \"tsc --build --watch\""
+		"start": "wp-scripts start"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^28.3.0",
-		"concurrently": "^9.0.0"
+		"@wordpress/scripts": "^28.3.0"
 	},
 	"prettier": "@wordpress/prettier-config",
 	"dependencies": {
-		"@wordpress/dataviews": "4.2.0"
+		"@wordpress/dataviews": "^4.3.0"
 	}
 }

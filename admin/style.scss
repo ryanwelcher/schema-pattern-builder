@@ -1,0 +1,17 @@
+@import "@wordpress/dataviews/build-style/style.css";
+
+
+#schema-pattern-builder {
+	background: white;
+}
+
+#schema-pattern-builder__header {
+	padding: 16px 48px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	.go-back {
+		margin-left: 16px;
+	}
+}

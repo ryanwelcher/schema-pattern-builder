@@ -15,47 +15,9 @@
 
 namespace SchemaBuilder;
 
-use WP_Query;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
-/**
- * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
- */
-function create_block_schema_builder_block_init() {
-	register_block_type( __DIR__ . '/build' );
-}
-add_action( 'init', __NAMESPACE__ . '\create_block_schema_builder_block_init' );
-
-
-// Enqueue filename from a plugin
-add_action(
-	'enqueue_block_editor_assets',
-	function() {
-		$assets_file = plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
-
-		if ( file_exists( $assets_file ) ) {
-			$assets = include $assets_file;
-			wp_enqueue_script(
-				'schema-variations',
-				plugin_dir_url( __FILE__ ) . 'build/index.js',
-				$assets['dependencies'],
-				$assets['version'],
-				true
-			);
-		}
-	}
-);
-
-
-
-
 
 /**
  * Stuff to do
@@ -69,7 +31,7 @@ add_action(
  * 7. Save meta somewhere
  * 8. ??
  * 9. Profit!
-*/
+ * /
 
 /**
  * Our class to deal with stuff.
@@ -133,6 +95,9 @@ class PatternBuilder {
 
 	}
 
+	/**
+	 * Enable meta_query for the schema REST endpoint
+	 */
 	public function query_schema_by_status( $args, $request ) {
 		if ( isset( $request['enabled'] ) && strlen( $request['enabled'] ) ) {
 			$status = filter_var( $request['enabled'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
@@ -166,10 +131,7 @@ class PatternBuilder {
 			'manage_options',
 			'schema-pattern-builder',
 			function () {
-				printf(
-					'<h1>%s</h1><div id="schema-pattern-builder"></div>',
-					esc_html__( 'Pattern Builder', 'schema-builder' )
-				);
+				echo '<div id="schema-pattern-builder"></div>';
 			}
 		);
 	}
@@ -206,18 +168,10 @@ class PatternBuilder {
 			)
 		);
 
-		// Base DataViews CSS.
+		// Combined CSS.
 		wp_enqueue_style(
 			'schema-admin-styles',
 			$url . 'build/style-admin.css',
-			array( 'wp-components' ),
-			$asset['version'],
-		);
-
-		// Custom CSS.
-		wp_enqueue_style(
-			'schema-admin-styles-new',
-			$url . 'build/admin.css',
 			array( 'wp-components' ),
 			$asset['version'],
 		);
@@ -249,6 +203,26 @@ class PatternBuilder {
 				'single'       => true,
 				'type'         => 'boolean',
 				'default'      => true,
+			)
+		);
+
+		register_post_meta(
+			'schema',
+			'mapping',
+			array(
+				'show_in_rest' => true,
+				'single'       => true,
+				'type'         => 'string',
+			)
+		);
+
+		register_term_meta(
+			'property',
+			'allowed_types',
+			array(
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
 			)
 		);
 	}
