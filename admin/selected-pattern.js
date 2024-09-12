@@ -77,6 +77,7 @@ const SelectedPattern = ( { pattern } ) => {
 							] }
 							value={ selectedMapping }
 							onChange={ ( value ) => {
+								// We need to enable the selected pattern for this property.
 								const newMappings = [
 									...allMappings,
 									`${ item.name }-${ value }`,

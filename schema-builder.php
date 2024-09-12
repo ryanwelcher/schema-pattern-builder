@@ -83,6 +83,8 @@ class PatternBuilder {
 	public function hooks() {
 		add_action( 'init', array( $this, 'retrieve_and_store_schema' ) );
 
+		add_action( 'init', array( $this, 'generate_patterns' ) );
+
 		// Register a CPT and a Taxonomy
 		add_action( 'init', array( $this, 'register_data_types' ), 2, 20 );
 
@@ -444,6 +446,49 @@ class PatternBuilder {
 
 		}
 		update_option( 'inserted_schemas', true );
+	}
+
+	/**
+	 * Generate the patterns based on the schema post type configuration
+	 */
+	public function generate_patterns() {
+
+		register_block_pattern_category(
+			'schema-builder',
+			array( 'label' => __( 'Schema.org' ) )
+		);
+		$args = array(
+			'post_type'      => 'schema',
+			'posts_per_page' => 100, // arbitrary number.
+			'meta_query' => array(
+				array(
+					'key'   => 'enabled',
+					'value' => true,
+				),
+			),
+		);
+
+		$query = new \WP_Query( $args );
+
+		if ( $query->have_posts() ) {
+			foreach ( $query->posts as $schema ) {
+
+				// Generate the html dynamically based on properties and their mappings.
+				$content = "<!-- wp:heading {\"className\":\"is-style-default\",\"schemaProp\":\"$schema->post_title\"} -->\n<h2 class=\"wp-block-heading is-style-default\">PLACEHOLDER::$schema->post_title</h2>\n<!-- /wp:heading -->";
+
+
+				// Pattern details
+				register_block_pattern(
+					'schema-builder/' . $schema->post_title,
+					array(
+						'title'       => $schema->post_title,
+						'description' => '',
+						'categories'  => array( 'schema-builder' ),
+						'content'     => $content,
+					)
+				);
+			}
+		}
 	}
 
 	/**
