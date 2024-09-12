@@ -109,7 +109,7 @@ class PatternBuilder {
 				),
 			);
 
-			if ( true === $status ) {
+			if ( false === $status ) {
 				$args['meta_query']['relation'] = 'OR';
 				$args['meta_query'][]           = array(
 					'key'     => 'enabled',
@@ -202,7 +202,7 @@ class PatternBuilder {
 				'show_in_rest' => true,
 				'single'       => true,
 				'type'         => 'boolean',
-				'default'      => true,
+				'default'      => false,
 			)
 		);
 
